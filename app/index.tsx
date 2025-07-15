@@ -4,95 +4,162 @@ import JostFont from "@/constants/jost-font";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
+import { useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import PagerView from "react-native-pager-view";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
+  const pagerRef = useRef<PagerView>(null);
+
+  const scrollToPage = (pageIndex: number) => {
+    pagerRef.current?.setPage(pageIndex);
+  };
+
   return (
     <>
-      {/* <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ fontFamily: JostFont.black, color: colors.primary }}>
-          Jost Black
-        </Text>
-        <Text style={{ fontFamily: JostFont.extraBold }}>Jost ExtaBold</Text>
-        <Text style={{ fontFamily: JostFont.bold }}>Jost Bold</Text>
-        <Text style={{ fontFamily: JostFont.semiBold }}>Jost SemiBold</Text>
-        <Text style={{ fontFamily: JostFont.medium }}>Jost Medium</Text>
-        <Text style={{ fontFamily: JostFont.normal }}>Jost Regular</Text>
-        <Text style={{ fontFamily: JostFont.light }}>Jost Light</Text>
-        <Text style={{ fontFamily: JostFont.extraLight }}>Jost ExtraLight</Text>
-        <Text style={{ fontFamily: JostFont.thin }}>Jost Thin</Text>
-      </View> */}
-      {/* <View style={styles.container}>
-        <View style={styles.card}>
-          <View style={styles.avatar} />
-          <Text style={styles.title}>User Name</Text>
-          <Text style={styles.subtitle}>Software Developer</Text>
-        </View>
-      </View> */}
       <StatusBar style="dark" />
-      <PagerView style={styles.container} initialPage={0}>
-        <View style={styles.page} key="1">
-          <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={require("../assets/images/onboarding-screen-1.png")}
-              contentFit="cover"
-            />
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.title}>Safe Delivery</Text>
-            <Text style={styles.subtitle}>
-              Getting your orders to you on safely and on time with our reliable
-              user-friendly app, you request a ride your choice, you get your
-              package in minutes.
-            </Text>
-            <View style={styles.circleContainer}>
-              <View style={styles.largeCircle} />
-              <View style={styles.smallCircle} />
+      <SafeAreaView style={[styles.container, { backgroundColor: "white" }]}>
+        <PagerView
+          ref={pagerRef}
+          style={styles.container}
+          initialPage={0}
+          overdrag={true}
+        >
+          <View style={styles.page} key="1">
+            <View style={styles.skipContainer}>
+              <Button onPress={() => scrollToPage(2)} label="Skip" />
             </View>
-            <View>
-              <Button label="Next" theme="primary" />
+            <View style={styles.imageContainer}>
+              <Image
+                style={styles.image}
+                source={require("../assets/images/onboarding-screen-1.png")}
+                contentFit="cover"
+              />
             </View>
-          </View>
-        </View>
-        <View style={styles.page} key="2">
-          <View
-            style={[styles.imageContainer, { paddingLeft: moderateScale(20) }]}
-          >
-            <Image
-              style={styles.image}
-              source={require("../assets/images/onboarding-screen-2.png")}
-              contentFit="cover"
-            />
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.title}>Live Location</Text>
-            <Text style={styles.subtitle}>
-              Keep an eye on your shipment with our live tracking features.
-              Transparency and peace of mind, guaranteed, making sure your goods
-              arrive on time
-            </Text>
-            <View style={styles.circleContainer}>
-              <View style={styles.smallCircle} />
-              <View style={styles.largeCircle} />
-            </View>
-            <View>
-              <Button label="Get Started" theme="primary" />
-              <Button label="Log in" />
+            <View style={styles.infoContainer}>
+              <Text style={styles.title}>Safe Delivery</Text>
+              <Text style={styles.subtitle}>
+                Getting your orders to you on safely and on time with our
+                reliable user-friendly app, you request a ride your choice, you
+                get your package in minutes.
+              </Text>
+              <View style={styles.circleContainer}>
+                <View style={styles.largeCircle} />
+                <View style={styles.smallCircle} />
+              </View>
+              <View>
+                <Button
+                  onPress={() => scrollToPage(1)}
+                  label="Next"
+                  theme="primary"
+                />
+              </View>
             </View>
           </View>
-        </View>
-        <View style={styles.page} key="3">
-          <Text>Third page</Text>
-        </View>
-      </PagerView>
+          <View style={styles.page} key="2">
+            <View style={styles.skipContainer}>
+              <Button onPress={() => scrollToPage(2)} label="Skip" />
+            </View>
+            <View
+              style={[
+                styles.imageContainer,
+                { paddingLeft: moderateScale(20) },
+              ]}
+            >
+              <Image
+                style={styles.image}
+                source={require("../assets/images/onboarding-screen-2.png")}
+                contentFit="cover"
+              />
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.title}>Live Location</Text>
+              <Text style={styles.subtitle}>
+                Keep an eye on your shipment with our live tracking features.
+                Transparency and peace of mind, guaranteed, making sure your
+                goods arrive on time
+              </Text>
+              <View style={styles.circleContainer}>
+                <View style={styles.smallCircle} />
+                <View style={styles.largeCircle} />
+              </View>
+              <View>
+                <Button
+                  onPress={() => scrollToPage(2)}
+                  label="Get Started"
+                  theme="primary"
+                />
+                <Button label="Log in" />
+              </View>
+            </View>
+          </View>
+          <View style={styles.page} key="3">
+            <View
+              style={[
+                styles.imageContainer,
+                // { paddingLeft: moderateScale(20) },
+              ]}
+            >
+              <Image
+                style={styles.image}
+                source={require("../assets/images/onboarding-screen-3.png")}
+                contentFit="cover"
+              />
+            </View>
+            <View style={[styles.infoContainer]}>
+              <Text
+                style={[
+                  styles.title,
+                  { fontSize: moderateScale(36), textAlign: "left" },
+                ]}
+              >
+                Sign up as:
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginVertical: verticalScale(20),
+                }}
+              >
+                <View style={styles.radioCircleOuter}>
+                  <View style={styles.radioCircleInner} />
+                </View>
+                <Text
+                  style={[
+                    styles.subtitle,
+                    {
+                      color: "black",
+                      textAlign: "left",
+                      marginHorizontal: moderateScale(14),
+                    },
+                  ]}
+                >
+                  Personal Account
+                </Text>
+              </View>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View style={styles.radioCircleOuter}>
+                  <View style={styles.radioCircleInner} />
+                </View>
+                <Text
+                  style={[
+                    styles.subtitle,
+                    {
+                      color: "black",
+                      textAlign: "left",
+                      marginHorizontal: moderateScale(14),
+                    },
+                  ]}
+                >
+                  Cooperate Account
+                </Text>
+              </View>
+            </View>
+          </View>
+        </PagerView>
+      </SafeAreaView>
     </>
   );
 }
@@ -105,12 +172,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffF",
+    position: "relative",
+  },
+  skipContainer: {
+    position: "absolute",
+    top: moderateScale(0),
+    right: moderateScale(-40),
   },
   imageContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
+
   image: {
     width: scale(261),
     height: verticalScale(260),
@@ -152,45 +226,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     marginHorizontal: moderateScale(5),
   },
-
-  // container: {
-  //   flex: 1,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  // },
-  card: {
-    width: scale(350),
-    height: verticalScale(180),
-    padding: moderateScale(20),
-    backgroundColor: "#FFFFFF",
-    borderRadius: moderateScale(15),
-    alignItems: "center",
+  radioCircleOuter: {
+    width: scale(20),
+    height: scale(20),
+    borderRadius: moderateScale(10),
+    borderWidth: moderateScale(2),
+    borderColor: "black",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: verticalScale(2),
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: moderateScale(3.84),
-    elevation: 5,
-    marginVertical: verticalScale(10),
+    alignItems: "center",
   },
-  avatar: {
-    width: scale(80),
-    height: scale(80),
-    borderRadius: moderateScale(40),
-    backgroundColor: "#E0E0E0",
-    marginBottom: verticalScale(12),
-  },
-  cardTitle: {
-    fontSize: moderateScale(20),
-    fontWeight: "bold",
-    color: "#333",
-  },
-  cardSubtitle: {
-    fontSize: moderateScale(14),
-    color: "gray",
-    marginTop: verticalScale(4),
+  radioCircleInner: {
+    width: scale(10),
+    height: scale(10),
+    borderRadius: moderateScale(5),
+    backgroundColor: "#D9D9D9",
   },
 });

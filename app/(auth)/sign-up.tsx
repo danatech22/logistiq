@@ -1,5 +1,5 @@
 import Button from "@/components/Button";
-import PasswordInput from "@/components/PasswordInput";
+import NigeriaPhoneInput from "@/components/PhoneInput";
 import TextInput from "@/components/TextInput";
 import colors from "@/constants/Colors";
 import JostFont from "@/constants/jost-font";
@@ -10,10 +10,11 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Login = () => {
+const SignUp = () => {
   const { resetOnboarding } = useOnboarding();
   const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  //   const [selectedValue, setSelectedValue] = useState("option1");
 
   return (
     <>
@@ -26,9 +27,26 @@ const Login = () => {
           />
         </View>
         <View style={[styles.inputContainer]}>
-          <Text style={[styles.title]}>Welcome Back!</Text>
-          <Text style={[styles.subtitle]}>Log into your account</Text>
+          <Text style={[styles.title]}>Welcome!</Text>
+          <Text style={[styles.subtitle]}>Create your account</Text>
 
+          <TextInput
+            placeholder="Full name"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="words"
+          />
+          {/* <Picker
+            selectedValue={selectedValue}
+            style={styles.picker}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedValue(itemValue)
+            }
+          >
+            <Picker.Item label="Option 1" value="option1" />
+            <Picker.Item label="Option 2" value="option2" />
+            <Picker.Item label="Option 3" value="option3" />
+          </Picker> */}
           <TextInput
             placeholder="Email"
             value={email}
@@ -36,22 +54,27 @@ const Login = () => {
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          <PasswordInput
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
+
+          <NigeriaPhoneInput
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
           />
-          <Text
-            style={[
-              styles.subtitle,
-              { fontSize: moderateScale(16), color: "#00", textAlign: "right" },
-            ]}
-          >
-            Forgot Password?
-          </Text>
+          <TextInput
+            placeholder="Home Address (optional)"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="words"
+          />
+          <TextInput
+            placeholder="Work Address (optional)"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="words"
+          />
         </View>
-        <View style={{ width: "70%" }}>
-          <Button label="Login" theme="primary" />
+
+        <View style={{ width: "85%" }}>
+          <Button label="Continue" theme="primary" />
           <Text
             style={[
               styles.subtitle,
@@ -63,7 +86,7 @@ const Login = () => {
               },
             ]}
           >
-            Don’t have an Account? Sign Up
+            Already have an Account? Sign In
           </Text>
           <Button onPress={() => resetOnboarding()} label="Reset" />
         </View>
@@ -72,7 +95,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
 
 const styles = StyleSheet.create({
   container: {
@@ -139,5 +162,13 @@ const styles = StyleSheet.create({
   },
   link: {
     backgroundColor: "red",
+  },
+  picker: {
+    height: 50,
+    width: 250,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 5,
+    borderColor: "#ccc",
+    borderWidth: 1,
   },
 });

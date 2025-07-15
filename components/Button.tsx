@@ -1,4 +1,4 @@
-import colors from "@/constants/colors";
+import colors from "@/constants/Colors";
 import JostFont from "@/constants/jost-font";
 import { moderateScale, verticalScale } from "@/utils/scaling";
 import { Pressable, StyleSheet, Text, View } from "react-native";

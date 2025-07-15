@@ -79,7 +79,7 @@ function RootLayoutContent() {
       </Stack.Protected>
 
       <Stack.Protected guard={onboardingCompleted && userName == null}>
-        <Stack.Screen name="(auth)/login" />
+        <Stack.Screen name="(auth)" />
       </Stack.Protected>
       {/* <Stack.Protected guard={onboardingCompleted && userToken == null}>
         <Stack.Screen name="(auth)" />

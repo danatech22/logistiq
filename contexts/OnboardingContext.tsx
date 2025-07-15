@@ -48,7 +48,6 @@ export function OnboardingProvider({ children }: PropsWithChildren) {
     try {
       await AsyncStorage.setItem("onboardingCompleted", "true");
       setOnboardingCompleted(true);
-      router.replace("/(auth)/login");
     } catch (error) {
       console.error("Failed to complete onboarding:", error);
     } finally {

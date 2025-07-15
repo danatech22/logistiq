@@ -1,5 +1,5 @@
 import Button from "@/components/Button";
-import colors from "@/constants/colors";
+import colors from "@/constants/Colors";
 import JostFont from "@/constants/jost-font";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
@@ -105,7 +105,13 @@ export default function Index() {
                   label="Get Started"
                   theme="primary"
                 />
-                <Button label="Log in" />
+                <Button
+                  onPress={async () => {
+                    await completeOnboarding();
+                    router.replace("/(auth)/login");
+                  }}
+                  label="Log in"
+                />
               </View>
             </View>
           </View>
@@ -134,6 +140,7 @@ export default function Index() {
               <Pressable
                 onPress={async () => {
                   await completeOnboarding();
+                  router.replace("/(auth)/sign-up");
                 }}
               >
                 <View

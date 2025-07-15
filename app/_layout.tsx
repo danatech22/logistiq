@@ -15,13 +15,22 @@ import {
   useFonts as useJostFonts,
 } from "@expo-google-fonts/jost";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
+import {
+  OnboardingProvider,
+  useOnboarding,
+} from "@/contexts/OnboardingContext";
 import { Stack } from "expo-router";
+import { Text, View } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootLayoutContent() {
+  const { onboardingCompleted, isLoadingOnboarding } = useOnboarding();
+  const [isAppReady, setIsAppReady] = useState(false);
+  let userName = null;
+
   const [interLoaded, interError] = useInterFonts({
     Inter_900Black,
   });
@@ -39,20 +48,59 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    if (!isLoadingOnboarding) {
+      SplashScreen.hideAsync();
+      setIsAppReady(true);
+    }
+  }, [isLoadingOnboarding]);
+
+  useEffect(() => {
     if (interLoaded || interError || jostLoaded || jostError) {
       SplashScreen.hideAsync();
     }
   }, [interLoaded, interError, jostLoaded, jostError]);
 
+  if (!isAppReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading app...</Text>
+      </View>
+    );
+  }
+
   if ((!interLoaded && !interError) || (!jostLoaded && !jostError)) {
     return null;
   }
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: "transparent" },
-      }}
-    />
+    <Stack screenOptions={{ headerShown: false }}>
+      {/* Protected routes for onboarding */}
+      <Stack.Protected guard={!onboardingCompleted}>
+        <Stack.Screen name="(public)/onboarding" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={onboardingCompleted && userName == null}>
+        <Stack.Screen name="(auth)/index" />
+      </Stack.Protected>
+      {/* <Stack.Protected guard={onboardingCompleted && userToken == null}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected> */}
+
+      {/* <Stack.Protected guard={onboardingCompleted && userToken != null}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected> */}
+      <Stack.Protected guard={onboardingCompleted && userName != null}>
+        <Stack.Screen name="(app)/index" />
+      </Stack.Protected>
+
+      <Stack.Screen name="+not-found" />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <OnboardingProvider>
+      <RootLayoutContent />
+    </OnboardingProvider>
   );
 }

@@ -1,16 +1,19 @@
 import Button from "@/components/Button";
 import colors from "@/constants/colors";
 import JostFont from "@/constants/jost-font";
+import { useOnboarding } from "@/contexts/OnboardingContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useRef } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import PagerView from "react-native-pager-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const pagerRef = useRef<PagerView>(null);
+  const { completeOnboarding } = useOnboarding();
 
   const scrollToPage = (pageIndex: number) => {
     pagerRef.current?.setPage(pageIndex);
@@ -28,12 +31,17 @@ export default function Index() {
         >
           <View style={styles.page} key="1">
             <View style={styles.skipContainer}>
-              <Button onPress={() => scrollToPage(2)} label="Skip" />
+              <Button
+                onPress={() => {
+                  scrollToPage(2);
+                }}
+                label="Skip"
+              />
             </View>
             <View style={styles.imageContainer}>
               <Image
                 style={styles.image}
-                source={require("../assets/images/onboarding-screen-1.png")}
+                source={require("../../assets/images/onboarding-screen-1.png")}
                 contentFit="cover"
               />
             </View>
@@ -59,7 +67,12 @@ export default function Index() {
           </View>
           <View style={styles.page} key="2">
             <View style={styles.skipContainer}>
-              <Button onPress={() => scrollToPage(2)} label="Skip" />
+              <Button
+                onPress={() => {
+                  scrollToPage(2);
+                }}
+                label="Skip"
+              />
             </View>
             <View
               style={[
@@ -69,7 +82,7 @@ export default function Index() {
             >
               <Image
                 style={styles.image}
-                source={require("../assets/images/onboarding-screen-2.png")}
+                source={require("../../assets/images/onboarding-screen-2.png")}
                 contentFit="cover"
               />
             </View>
@@ -86,7 +99,9 @@ export default function Index() {
               </View>
               <View>
                 <Button
-                  onPress={() => scrollToPage(2)}
+                  onPress={() => {
+                    scrollToPage(2);
+                  }}
                   label="Get Started"
                   theme="primary"
                 />
@@ -103,7 +118,7 @@ export default function Index() {
             >
               <Image
                 style={styles.image}
-                source={require("../assets/images/onboarding-screen-3.png")}
+                source={require("../../assets/images/onboarding-screen-3.png")}
                 contentFit="cover"
               />
             </View>
@@ -116,46 +131,59 @@ export default function Index() {
               >
                 Sign up as:
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginVertical: verticalScale(20),
+              <Pressable
+                onPress={async () => {
+                  await completeOnboarding();
                 }}
               >
-                <View style={styles.radioCircleOuter}>
-                  <View style={styles.radioCircleInner} />
-                </View>
-                <Text
-                  style={[
-                    styles.subtitle,
-                    {
-                      color: "black",
-                      textAlign: "left",
-                      marginHorizontal: moderateScale(14),
-                    },
-                  ]}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginVertical: verticalScale(20),
+                  }}
                 >
-                  Personal Account
-                </Text>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <View style={styles.radioCircleOuter}>
-                  <View style={styles.radioCircleInner} />
+                  <View style={styles.radioCircleOuter}>
+                    <View style={styles.radioCircleInner} />
+                  </View>
+                  <Text
+                    style={[
+                      styles.subtitle,
+                      {
+                        color: "black",
+                        textAlign: "left",
+                        marginHorizontal: moderateScale(14),
+                      },
+                    ]}
+                  >
+                    Personal Account
+                  </Text>
                 </View>
-                <Text
-                  style={[
-                    styles.subtitle,
-                    {
-                      color: "black",
-                      textAlign: "left",
-                      marginHorizontal: moderateScale(14),
-                    },
-                  ]}
-                >
-                  Cooperate Account
-                </Text>
-              </View>
+              </Pressable>
+              <Pressable
+                onPress={async () => {
+                  await completeOnboarding();
+                  router.push("/(auth)/index");
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View style={styles.radioCircleOuter}>
+                    <View style={styles.radioCircleInner} />
+                  </View>
+                  <Text
+                    style={[
+                      styles.subtitle,
+                      {
+                        color: "black",
+                        textAlign: "left",
+                        marginHorizontal: moderateScale(14),
+                      },
+                    ]}
+                  >
+                    Cooperate Account
+                  </Text>
+                </View>
+              </Pressable>
             </View>
           </View>
         </PagerView>
@@ -240,5 +268,8 @@ const styles = StyleSheet.create({
     height: scale(10),
     borderRadius: moderateScale(5),
     backgroundColor: "#D9D9D9",
+  },
+  link: {
+    backgroundColor: "red",
   },
 });

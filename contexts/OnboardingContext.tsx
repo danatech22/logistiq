@@ -48,7 +48,7 @@ export function OnboardingProvider({ children }: PropsWithChildren) {
     try {
       await AsyncStorage.setItem("onboardingCompleted", "true");
       setOnboardingCompleted(true);
-      router.replace("/(auth)/index");
+      router.replace("/(auth)/login");
     } catch (error) {
       console.error("Failed to complete onboarding:", error);
     } finally {
@@ -62,11 +62,7 @@ export function OnboardingProvider({ children }: PropsWithChildren) {
       await AsyncStorage.removeItem("onboardingCompleted");
       setOnboardingCompleted(false);
 
-      if (router.canGoBack()) {
-        router.back();
-      } else {
-        router.replace("/(public)/onboarding"); // Ensure we are on the onboarding flow
-      }
+      router.replace("/(public)/onboarding");
     } catch (error) {
       console.error("Failed to reset onboarding:", error);
     } finally {

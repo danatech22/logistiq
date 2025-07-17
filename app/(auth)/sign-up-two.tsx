@@ -1,14 +1,14 @@
 import Button from "@/components/Button";
-import CustomDatePicker from "@/components/DatePicker";
-import NigeriaPhoneInput from "@/components/PhoneInput";
-import CustomSelect from "@/components/Select";
+import PasswordInput from "@/components/PasswordInput";
 import TextInput from "@/components/TextInput";
+import colors from "@/constants/colors";
 import JostFont from "@/constants/jost-font";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
+import Checkbox from "expo-checkbox";
 import { Image } from "expo-image";
-import { Link, router } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react"; // Import useCallback and useMemo
+import { Link } from "expo-router";
+import React, { useCallback, useState } from "react"; // Import useCallback and useMemo
 import {
   Alert,
   Keyboard,
@@ -22,71 +22,36 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// Define options outside the component to prevent re-creation on every render
-const GENDER_OPTIONS = [
-  { label: "Male", value: "male" },
-  { label: "Female", value: "female" },
-];
-
 const SignUp = () => {
   const { resetOnboarding } = useOnboarding();
 
   // State variables for form inputs
-  const [fullName, setFullName] = useState("");
-  const [selectedGender, setSelectedGender] = useState<string | null>(null); // Renamed for clarity
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [homeAddress, setHomeAddress] = useState("");
-  const [workAddress, setWorkAddress] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>(undefined); // Initialize as undefined
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChecked, setChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // To manage loading state for button
-
-  // Memoize date change handler to prevent unnecessary re-renders of CustomDatePicker
-  const handleDateChange = useCallback((event: any, selectedDate?: Date) => {
-    // Check if selectedDate is defined before setting
-    if (selectedDate) {
-      setDateOfBirth(selectedDate);
-    }
-  }, []); // Empty dependency array means this function is created once
 
   // Function to handle signup logic
   const handleSignUp = useCallback(async () => {
     // Basic validation
-    if (
-      !fullName ||
-      !email ||
-      !phoneNumber ||
-      !selectedGender ||
-      !dateOfBirth
-    ) {
+    if (!username || !password || !confirmPassword) {
       Alert.alert(
         "Missing Information",
-        "Please fill in all required fields (Full name, Email, Phone number, Gender, Date of Birth)."
+        "Please fill in all required fields (user name, password, confirm password,"
       );
       return;
     }
-
-    // Add more robust validation for email and phone number if needed
-    // Example: simple email regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Alert.alert("Invalid Email", "Please enter a valid email address.");
-      return;
-    }
-    // You might want to validate phone number format based on NigeriaPhoneInput's output
 
     setIsLoading(true); // Start loading
 
     try {
       // Simulate API call
       console.log("Attempting to sign up with:", {
-        fullName,
-        selectedGender,
-        email,
-        phoneNumber,
-        homeAddress,
-        workAddress,
-        dateOfBirth: dateOfBirth?.toISOString().split("T")[0], // Format date for API
+        username,
+
+        password,
+        confirmPassword,
       });
 
       // Replace with actual API call (e.g., fetch, axios)
@@ -104,18 +69,7 @@ const SignUp = () => {
     } finally {
       setIsLoading(false); // End loading
     }
-  }, [
-    fullName,
-    selectedGender,
-    email,
-    phoneNumber,
-    homeAddress,
-    workAddress,
-    dateOfBirth,
-  ]); // Dependencies for useCallback
-
-  // Memoize the gender options to prevent unnecessary re-renders of CustomSelect
-  const genderOptions = useMemo(() => GENDER_OPTIONS, []);
+  }, [username, password, confirmPassword]); // Dependencies for useCallback
 
   return (
     <SafeAreaView style={[styles.container]}>
@@ -142,70 +96,68 @@ const SignUp = () => {
               <Text style={styles.title}>Welcome!</Text>
               <Text style={styles.subtitle}>Create your account</Text>
               <TextInput
-                placeholder="Full name"
-                value={fullName}
-                onChangeText={setFullName}
+                placeholder="Create a Unique Username"
+                value={username}
+                onChangeText={setUsername}
                 autoCapitalize="words"
                 returnKeyType="next" // Improve keyboard navigation
                 onSubmitEditing={() => Keyboard.dismiss()} // Consider focusing next input instead
               />
-              <View style={styles.rowInputs}>
-                <View style={styles.rowInputHalf}>
-                  <CustomDatePicker
-                  // date={dateOfBirth} // Pass state to DatePicker
-                  // onChange={handleDateChange} // Pass the memoized handler
-                  // placeholder="Date of Birth" // Add a placeholder for clarity
-                  />
-                </View>
-                <View style={styles.rowInputHalf}>
-                  <CustomSelect
-                    options={genderOptions}
-                    placeholder="Gender"
-                    onValueChange={setSelectedGender} // Use selectedGender
-                    value={selectedGender}
-                  />
-                </View>
-              </View>
-              <TextInput
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
+              <PasswordInput
+                placeholder="Create a Password"
+                value={password}
+                onChangeText={setPassword}
+                keyboardType="default"
                 autoCapitalize="none"
                 returnKeyType="next"
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
-              <NigeriaPhoneInput
-                value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                returnKeyType="next"
+              <PasswordInput
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                keyboardType="default"
+                autoCapitalize="none"
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
-              <TextInput
-                placeholder="Home Address (optional)"
-                value={homeAddress}
-                onChangeText={setHomeAddress}
-                autoCapitalize="words"
-                returnKeyType="next"
-                onSubmitEditing={() => Keyboard.dismiss()}
-              />
-              <TextInput
-                placeholder="Work Address (optional)"
-                value={workAddress}
-                onChangeText={setWorkAddress}
-                autoCapitalize="words"
-                returnKeyType="done" // Last input, so "done"
-                onSubmitEditing={handleSignUp} // Submit form on last input
-              />
+              <View
+                style={{
+                  width: "90%",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: verticalScale(10),
+                }}
+              >
+                <Checkbox
+                  //   style={{ margin: scale(8) }}
+                  value={isChecked}
+                  onValueChange={setChecked}
+                  color={isChecked ? colors.primary : undefined}
+                />
+                <Text style={styles.termsText}>
+                  By clicking this box, i have read, understood and agreed to
+                  the
+                  <Link
+                    style={{
+                      color: colors.primary,
+                      fontFamily: JostFont.medium,
+                      textDecorationLine: "underline",
+                    }}
+                    href="/#"
+                  >
+                    {" "}
+                    terms and conditions
+                  </Link>{" "}
+                  of FalconEx
+                </Text>
+              </View>
             </View>
 
             <View style={styles.buttonContainer}>
               <Button
-                label={isLoading ? "Signing Up..." : "Continue"}
+                label={isLoading ? "Signing Up..." : "Sign Up"}
                 theme="primary"
-                onPress={() => {
-                  router.push("/(auth)/sign-up-two"); // Navigate to next step
-                }}
+                onPress={handleSignUp}
                 // disabled={isLoading}
               />
               <Link href="/(auth)/login" style={styles.signInLink}>
@@ -215,6 +167,7 @@ const SignUp = () => {
                 onPress={() => resetOnboarding()}
                 label="Reset Onboarding"
               />
+              {/* Make reset button distinct */}
             </View>
           </ScrollView>
         </Pressable>
@@ -276,6 +229,14 @@ const styles = StyleSheet.create({
   },
   rowInputHalf: {
     width: "48%", // Maintain 48% width for each input in the row
+  },
+  termsText: {
+    fontSize: moderateScale(14),
+    fontFamily: JostFont.light,
+    fontStyle: "italic",
+    color: "#686868",
+    marginLeft: scale(10), // Add some space between checkbox and text
+    // marginBottom: verticalScale(40),
   },
   buttonContainer: {
     width: "100%",

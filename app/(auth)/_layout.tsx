@@ -23,6 +23,12 @@ export default function AuthLayout() {
           title: "Sign Up",
         }}
       />
+      <Stack.Screen
+        name="sign-up-two"
+        options={{
+          title: "Sign Up Two",
+        }}
+      />
 
       {/*
         You might have other authentication-related screens here,

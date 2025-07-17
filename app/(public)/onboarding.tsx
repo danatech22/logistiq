@@ -1,5 +1,6 @@
 import Button from "@/components/Button";
-import colors from "@/constants/Colors";
+import colors from "@/constants/colors";
+
 import JostFont from "@/constants/jost-font";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";

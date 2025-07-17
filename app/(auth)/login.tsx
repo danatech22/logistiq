@@ -1,11 +1,13 @@
 import Button from "@/components/Button";
 import PasswordInput from "@/components/PasswordInput";
 import TextInput from "@/components/TextInput";
-import colors from "@/constants/Colors";
+import colors from "@/constants/colors";
+
 import JostFont from "@/constants/jost-font";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
 import { Image } from "expo-image";
+import { Link } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -52,7 +54,8 @@ const Login = () => {
         </View>
         <View style={{ width: "70%" }}>
           <Button label="Login" theme="primary" />
-          <Text
+          <Link
+            href="/(auth)/sign-up"
             style={[
               styles.subtitle,
               {
@@ -64,7 +67,7 @@ const Login = () => {
             ]}
           >
             Don’t have an Account? Sign Up
-          </Text>
+          </Link>
           <Button onPress={() => resetOnboarding()} label="Reset" />
         </View>
       </SafeAreaView>

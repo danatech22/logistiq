@@ -20,7 +20,7 @@ export default function AuthLayout() {
       <Stack.Screen
         name="sign-up"
         options={{
-          title: "Sign Up", // Optional: A title for debugging/dev tools
+          title: "Sign Up",
         }}
       />
 

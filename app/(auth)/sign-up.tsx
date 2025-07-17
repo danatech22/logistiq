@@ -1,20 +1,35 @@
 import Button from "@/components/Button";
+import CustomDatePicker from "@/components/DatePicker";
 import NigeriaPhoneInput from "@/components/PhoneInput";
+import CustomSelect from "@/components/Select";
 import TextInput from "@/components/TextInput";
-import colors from "@/constants/Colors";
 import JostFont from "@/constants/jost-font";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
 import { Image } from "expo-image";
+import { Link } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignUp = () => {
   const { resetOnboarding } = useOnboarding();
-  const [email, setEmail] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  //   const [selectedValue, setSelectedValue] = useState("option1");
+
+  // 💡 Each input needs its own state variable
+  const [fullName, setFullName] = useState("");
+  const [selected, setSelected] = React.useState<string | null>(null);
+
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [homeAddress, setHomeAddress] = useState("");
+  const [workAddress, setWorkAddress] = useState("");
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [show, setShow] = useState(false);
+
+  const onChange = (event: any, selectedDate: any) => {
+    const currentDate = selectedDate;
+    setDate(currentDate);
+  };
 
   return (
     <>
@@ -32,21 +47,47 @@ const SignUp = () => {
 
           <TextInput
             placeholder="Full name"
-            value={email}
-            onChangeText={setEmail}
+            value={fullName}
+            onChangeText={setFullName}
             autoCapitalize="words"
           />
-          {/* <Picker
-            selectedValue={selectedValue}
-            style={styles.picker}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedValue(itemValue)
-            }
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Picker.Item label="Option 1" value="option1" />
-            <Picker.Item label="Option 2" value="option2" />
-            <Picker.Item label="Option 3" value="option3" />
-          </Picker> */}
+            <View style={{ width: "48%" }}>
+              {/* <Pressable
+                onPress={() => setShow(true)}
+                style={{
+                  height: verticalScale(40),
+                  borderWidth: 1,
+                  borderColor: "#ddd",
+                  borderRadius: moderateScale(8),
+                  justifyContent: "center",
+                  paddingHorizontal: scale(12),
+                }}
+              >
+                <Text style={{ color: "#333" }}>Date of Birth</Text>
+              </Pressable>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode="date"
+                  onChange={onChange}
+                />
+              )} */}
+              <CustomDatePicker />
+            </View>
+            <View style={{ width: "48%" }}>
+              <CustomSelect
+                options={genderOptions}
+                placeholder="Gender"
+                onValueChange={setSelected}
+                value={selected}
+              />
+            </View>
+          </View>
+
           <TextInput
             placeholder="Email"
             value={email}
@@ -61,33 +102,34 @@ const SignUp = () => {
           />
           <TextInput
             placeholder="Home Address (optional)"
-            value={email}
-            onChangeText={setEmail}
+            value={homeAddress}
+            onChangeText={setHomeAddress}
             autoCapitalize="words"
           />
           <TextInput
             placeholder="Work Address (optional)"
-            value={email}
-            onChangeText={setEmail}
+            value={workAddress}
+            onChangeText={setWorkAddress}
             autoCapitalize="words"
           />
         </View>
 
         <View style={{ width: "85%" }}>
           <Button label="Continue" theme="primary" />
-          <Text
+          <Link
+            href="/(auth)/login"
             style={[
               styles.subtitle,
               {
                 fontSize: moderateScale(16),
-                color: "#00",
+                color: "#000",
                 textAlign: "center",
                 marginTop: verticalScale(15),
               },
             ]}
           >
             Already have an Account? Sign In
-          </Text>
+          </Link>
           <Button onPress={() => resetOnboarding()} label="Reset" />
         </View>
       </SafeAreaView>
@@ -125,50 +167,18 @@ const styles = StyleSheet.create({
     color: "#3D3D3D",
     marginBottom: verticalScale(40),
   },
-  circleContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: verticalScale(40),
-  },
-  smallCircle: {
-    width: scale(8),
-    height: scale(8),
-    borderRadius: moderateScale(4),
-    backgroundColor: colors.grey,
-    marginHorizontal: moderateScale(5),
-  },
-  largeCircle: {
-    width: scale(12),
-    height: scale(12),
-    borderRadius: moderateScale(6),
-    backgroundColor: colors.primary,
-    marginHorizontal: moderateScale(5),
-  },
-  radioCircleOuter: {
-    width: scale(20),
-    height: scale(20),
-    borderRadius: moderateScale(10),
-    borderWidth: moderateScale(2),
-    borderColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  radioCircleInner: {
-    width: scale(10),
-    height: scale(10),
-    borderRadius: moderateScale(5),
-    backgroundColor: "#D9D9D9",
-  },
-  link: {
-    backgroundColor: "red",
-  },
-  picker: {
-    height: 50,
-    width: 250,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 5,
-    borderColor: "#ccc",
-    borderWidth: 1,
-  },
+  // Other styles remain the same...
 });
+
+const options = [
+  { label: "JavaScript", value: "js" },
+  { label: "TypeScript", value: "ts" },
+  { label: "Python", value: "py" },
+  { label: "Java", value: "java" },
+  { label: "C#", value: "csharp" },
+];
+
+const genderOptions = [
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+];

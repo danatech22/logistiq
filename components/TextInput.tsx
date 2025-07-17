@@ -1,7 +1,8 @@
 // TextInput.tsx
-import { moderateScale, verticalScale } from "@/utils/scaling";
+import { moderateScale, scale, verticalScale } from "@/utils/scaling";
 import React from "react";
 import {
+  Platform,
   TextInput as RNTextInput,
   StyleSheet,
   Text,
@@ -57,8 +58,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: moderateScale(8),
-    paddingHorizontal: moderateScale(12),
-    fontSize: moderateScale(16),
+    paddingHorizontal: scale(12),
+    paddingTop: Platform.OS === "android" ? verticalScale(10) : 0,
+    fontSize: moderateScale(14),
     backgroundColor: "#F4F4F4",
   },
   errorInput: {

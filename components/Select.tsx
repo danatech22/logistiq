@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
-  FlatList,
   Keyboard,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -121,6 +121,36 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
       </TouchableOpacity>
 
       {isOpen && (
+        // <Animated.View
+        //   ref={dropdownRef}
+        //   style={[
+        //     styles.dropdown,
+        //     {
+        //       opacity: opacityAnimation,
+        //       transform: [{ translateY: dropdownTop }],
+        //       [dropdownPosition === "above" ? "bottom" : "top"]: "100%",
+        //     },
+        //   ]}
+        // >
+        //   <FlatList
+        //     data={options}
+        //     keyExtractor={(item) => item.value}
+        //     renderItem={({ item }) => (
+        //       <TouchableOpacity
+        //         style={[
+        //           styles.option,
+        //           selectedOption?.value === item.value && styles.selectedOption,
+        //         ]}
+        //         onPress={() => handleSelect(item)}
+        //       >
+        //         <Text style={styles.optionText}>{item.label}</Text>
+        //       </TouchableOpacity>
+        //     )}
+        //     ItemSeparatorComponent={() => <View style={styles.separator} />}
+        //     keyboardShouldPersistTaps="always"
+        //   />
+        // </Animated.View>
+
         <Animated.View
           ref={dropdownRef}
           style={[
@@ -132,11 +162,10 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
             },
           ]}
         >
-          <FlatList
-            data={options}
-            keyExtractor={(item) => item.value}
-            renderItem={({ item }) => (
+          <ScrollView keyboardShouldPersistTaps="always">
+            {options.map((item) => (
               <TouchableOpacity
+                key={item.value}
                 style={[
                   styles.option,
                   selectedOption?.value === item.value && styles.selectedOption,
@@ -145,10 +174,8 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
               >
                 <Text style={styles.optionText}>{item.label}</Text>
               </TouchableOpacity>
-            )}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-            keyboardShouldPersistTaps="always"
-          />
+            ))}
+          </ScrollView>
         </Animated.View>
       )}
     </View>

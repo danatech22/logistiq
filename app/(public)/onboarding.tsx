@@ -171,7 +171,7 @@ export default function Index() {
               <Pressable
                 onPress={async () => {
                   await completeOnboarding();
-                  router.push("/(auth)/login");
+                  router.push("/(auth)/corporate-sign-up");
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>

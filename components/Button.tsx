@@ -1,15 +1,16 @@
 import colors from "@/constants/colors";
 import JostFont from "@/constants/jost-font";
 import { moderateScale, verticalScale } from "@/utils/scaling";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, ViewStyle } from "react-native";
 
 type Props = {
   label: string;
   theme?: "primary";
   onPress?: () => void;
+  style?: ViewStyle;
 };
 
-export default function Button({ label, theme, onPress }: Props) {
+export default function Button({ label, theme, onPress, style }: Props) {
   if (theme === "primary") {
     return (
       <View style={[styles.buttonContainer]}>
@@ -25,7 +26,7 @@ export default function Button({ label, theme, onPress }: Props) {
 
   return (
     <View style={styles.buttonContainer}>
-      <Pressable style={styles.button} onPress={onPress}>
+      <Pressable style={[styles.button, style]} onPress={onPress}>
         <Text style={styles.buttonLabel}>{label}</Text>
       </Pressable>
     </View>

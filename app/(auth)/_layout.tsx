@@ -29,6 +29,24 @@ export default function AuthLayout() {
           title: "Sign Up Two",
         }}
       />
+      <Stack.Screen
+        name="corporate-sign-up"
+        options={{
+          title: "Corporate Sign Up",
+        }}
+      />
+      <Stack.Screen
+        name="corporate-sign-up-two"
+        options={{
+          title: "Corporate Sign Up Two",
+        }}
+      />
+      <Stack.Screen
+        name="otp-verify"
+        options={{
+          title: "OTP Verification",
+        }}
+      />
 
       {/*
         You might have other authentication-related screens here,

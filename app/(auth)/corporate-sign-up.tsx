@@ -1,14 +1,12 @@
 import Button from "@/components/Button";
-import PasswordInput from "@/components/PasswordInput";
+import NigeriaPhoneInput from "@/components/PhoneInput";
 import TextInput from "@/components/TextInput";
-import colors from "@/constants/colors";
 import JostFont from "@/constants/jost-font";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
-import Checkbox from "expo-checkbox";
 import { Image } from "expo-image";
 import { Link, router } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react"; // Import useCallback and useMemo
 import {
   Alert,
   Keyboard,
@@ -22,36 +20,71 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const SignUpTwo = () => {
+// Define options outside the component to prevent re-creation on every render
+const GENDER_OPTIONS = [
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+];
+
+const CorporateSignUp = () => {
   const { resetOnboarding } = useOnboarding();
 
   // State variables for form inputs
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isChecked, setChecked] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [selectedGender, setSelectedGender] = useState<string | null>(null); // Renamed for clarity
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [homeAddress, setHomeAddress] = useState("");
+  const [workAddress, setWorkAddress] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>(undefined); // Initialize as undefined
   const [isLoading, setIsLoading] = useState(false); // To manage loading state for button
+
+  // Memoize date change handler to prevent unnecessary re-renders of CustomDatePicker
+  const handleDateChange = useCallback((event: any, selectedDate?: Date) => {
+    // Check if selectedDate is defined before setting
+    if (selectedDate) {
+      setDateOfBirth(selectedDate);
+    }
+  }, []); // Empty dependency array means this function is created once
 
   // Function to handle signup logic
   const handleSignUp = useCallback(async () => {
     // Basic validation
-    if (!username || !password || !confirmPassword) {
+    if (
+      !fullName ||
+      !email ||
+      !phoneNumber ||
+      !selectedGender ||
+      !dateOfBirth
+    ) {
       Alert.alert(
         "Missing Information",
-        "Please fill in all required fields (user name, password, confirm password,"
+        "Please fill in all required fields (Full name, Email, Phone number, Gender, Date of Birth)."
       );
       return;
     }
+
+    // Add more robust validation for email and phone number if needed
+    // Example: simple email regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
+      return;
+    }
+    // You might want to validate phone number format based on NigeriaPhoneInput's output
 
     setIsLoading(true); // Start loading
 
     try {
       // Simulate API call
       console.log("Attempting to sign up with:", {
-        username,
-
-        password,
-        confirmPassword,
+        fullName,
+        selectedGender,
+        email,
+        phoneNumber,
+        homeAddress,
+        workAddress,
+        dateOfBirth: dateOfBirth?.toISOString().split("T")[0], // Format date for API
       });
 
       // Replace with actual API call (e.g., fetch, axios)
@@ -69,7 +102,18 @@ const SignUpTwo = () => {
     } finally {
       setIsLoading(false); // End loading
     }
-  }, [username, password, confirmPassword]); // Dependencies for useCallback
+  }, [
+    fullName,
+    selectedGender,
+    email,
+    phoneNumber,
+    homeAddress,
+    workAddress,
+    dateOfBirth,
+  ]); // Dependencies for useCallback
+
+  // Memoize the gender options to prevent unnecessary re-renders of CustomSelect
+  const genderOptions = useMemo(() => GENDER_OPTIONS, []);
 
   return (
     <SafeAreaView style={[styles.container]}>
@@ -78,11 +122,10 @@ const SignUpTwo = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <Pressable onPress={Keyboard.dismiss} style={styles.pressableOverlay}>
-          {/* ScrollView for long forms */}
           <ScrollView
             contentContainerStyle={styles.scrollViewContent}
-            keyboardShouldPersistTaps="handled" // Allows taps on buttons/links even when keyboard is active
-            showsVerticalScrollIndicator={false} // Hide scroll indicator for cleaner UI
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
             <View style={styles.logoContainer}>
               <Image
@@ -92,73 +135,66 @@ const SignUpTwo = () => {
               />
             </View>
             <View style={styles.inputSection}>
-              {/* Group inputs logically */}
               <Text style={styles.title}>Welcome!</Text>
               <Text style={styles.subtitle}>Create your account</Text>
               <TextInput
-                placeholder="Create a Unique Username"
-                value={username}
-                onChangeText={setUsername}
+                placeholder="Company name"
+                value={fullName}
+                onChangeText={setFullName}
                 autoCapitalize="words"
-                returnKeyType="next" // Improve keyboard navigation
-                onSubmitEditing={() => Keyboard.dismiss()} // Consider focusing next input instead
+                returnKeyType="next"
+                onSubmitEditing={() => Keyboard.dismiss()}
               />
-              <PasswordInput
-                placeholder="Create a Password"
-                value={password}
-                onChangeText={setPassword}
-                keyboardType="default"
+
+              <TextInput
+                placeholder="Company Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
                 autoCapitalize="none"
                 returnKeyType="next"
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
-              <PasswordInput
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                keyboardType="default"
-                autoCapitalize="none"
+              <NigeriaPhoneInput
+                placeholder="Company Mobile Number"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                returnKeyType="next"
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
-
-              <View
-                style={{
-                  width: "90%",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: verticalScale(10),
-                }}
-              >
-                <Checkbox
-                  //   style={{ margin: scale(8) }}
-                  value={isChecked}
-                  onValueChange={setChecked}
-                  color={isChecked ? colors.primary : undefined}
-                />
-                <Text style={styles.termsText}>
-                  By clicking this box, i have read, understood and agreed to
-                  the
-                  <Link
-                    style={{
-                      color: colors.primary,
-                      fontFamily: JostFont.medium,
-                      textDecorationLine: "underline",
-                    }}
-                    href="/#"
-                  >
-                    {" "}
-                    terms and conditions
-                  </Link>{" "}
-                  of FalconEx
-                </Text>
-              </View>
+              <TextInput
+                placeholder="Business Address For Delivery"
+                value={homeAddress}
+                onChangeText={setHomeAddress}
+                autoCapitalize="words"
+                returnKeyType="next"
+                onSubmitEditing={() => Keyboard.dismiss()}
+              />
+              <TextInput
+                placeholder="Registered Company Address"
+                value={workAddress}
+                onChangeText={setWorkAddress}
+                autoCapitalize="words"
+                returnKeyType="next"
+                onSubmitEditing={() => Keyboard.dismiss()}
+              />
+              <TextInput
+                placeholder="Additional Location (If Applicable)"
+                value={workAddress}
+                onChangeText={setWorkAddress}
+                autoCapitalize="words"
+                returnKeyType="done" // Last input, so "done"
+                onSubmitEditing={handleSignUp} // Submit form on last input
+              />
             </View>
 
             <View style={styles.buttonContainer}>
               <Button
-                label={isLoading ? "Signing Up..." : "Sign Up"}
+                label={isLoading ? "Signing Up..." : "Continue"}
                 theme="primary"
-                onPress={() => router.push("/(auth)/otp-verify")}
+                onPress={() => {
+                  router.push("/(auth)/corporate-sign-up-two"); // Navigate to next step
+                }}
                 // disabled={isLoading}
               />
               <Link href="/(auth)/login" style={styles.signInLink}>
@@ -168,7 +204,6 @@ const SignUpTwo = () => {
                 onPress={() => resetOnboarding()}
                 label="Reset Onboarding"
               />
-              {/* Make reset button distinct */}
             </View>
           </ScrollView>
         </Pressable>
@@ -177,7 +212,7 @@ const SignUpTwo = () => {
   );
 };
 
-export default SignUpTwo;
+export default CorporateSignUp;
 
 const styles = StyleSheet.create({
   container: {
@@ -191,7 +226,7 @@ const styles = StyleSheet.create({
     flex: 1, // Make sure the Pressable covers the entire area to dismiss keyboard
   },
   scrollViewContent: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: "center",
     paddingVertical: verticalScale(20), // Use vertical padding
     paddingHorizontal: scale(20), // Add some horizontal padding for overall content
@@ -230,14 +265,6 @@ const styles = StyleSheet.create({
   },
   rowInputHalf: {
     width: "48%", // Maintain 48% width for each input in the row
-  },
-  termsText: {
-    fontSize: moderateScale(14),
-    fontFamily: JostFont.light,
-    fontStyle: "italic",
-    color: "#686868",
-    marginLeft: scale(10), // Add some space between checkbox and text
-    // marginBottom: verticalScale(40),
   },
   buttonContainer: {
     width: "100%",

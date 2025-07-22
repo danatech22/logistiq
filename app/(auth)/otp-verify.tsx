@@ -64,7 +64,7 @@ const OTPVerify = () => {
                 label="Verify OTP"
                 style={{ borderWidth: 1, borderColor: colors.primary }}
                 onPress={() => {
-                  router.push("/#");
+                  router.push("/(auth)/location-access");
                 }}
                 // disabled={isLoading}
               />

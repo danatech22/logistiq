@@ -42,6 +42,36 @@ export default function AuthLayout() {
         }}
       />
       <Stack.Screen
+        name="corporate-sign-up-three"
+        options={{
+          title: "Corporate Sign Up Three",
+        }}
+      />
+      <Stack.Screen
+        name="corporate-sign-up-four"
+        options={{
+          title: "Corporate Sign Up Four",
+        }}
+      />
+      <Stack.Screen
+        name="corporate-sign-up-five"
+        options={{
+          title: "Corporate Sign Up Five",
+        }}
+      />
+      <Stack.Screen
+        name="location-access"
+        options={{
+          title: "Location",
+        }}
+      />
+      <Stack.Screen
+        name="location-access-manual"
+        options={{
+          title: "Location",
+        }}
+      />
+      <Stack.Screen
         name="otp-verify"
         options={{
           title: "OTP Verification",

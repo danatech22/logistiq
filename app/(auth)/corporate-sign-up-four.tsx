@@ -1,13 +1,13 @@
 import Button from "@/components/Button";
-import CustomDatePicker from "@/components/DatePicker";
 import NigeriaPhoneInput from "@/components/PhoneInput";
-import CustomSelect from "@/components/Select";
 import TextInput from "@/components/TextInput";
 import colors from "@/constants/colors";
 import JostFont from "@/constants/jost-font";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
-import { router } from "expo-router";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Checkbox from "expo-checkbox";
+import { Link, router } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react"; // Import useCallback and useMemo
 import {
   Alert,
@@ -38,42 +38,19 @@ const SignUp = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [homeAddress, setHomeAddress] = useState("");
   const [workAddress, setWorkAddress] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>(undefined); // Initialize as undefined
+  const [isChecked, setChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // To manage loading state for button
-
-  // Memoize date change handler to prevent unnecessary re-renders of CustomDatePicker
-  const handleDateChange = useCallback((event: any, selectedDate?: Date) => {
-    // Check if selectedDate is defined before setting
-    if (selectedDate) {
-      setDateOfBirth(selectedDate);
-    }
-  }, []); // Empty dependency array means this function is created once
 
   // Function to handle signup logic
   const handleSignUp = useCallback(async () => {
     // Basic validation
-    if (
-      !fullName ||
-      !email ||
-      !phoneNumber ||
-      !selectedGender ||
-      !dateOfBirth
-    ) {
+    if (!fullName || !email || !phoneNumber || !selectedGender) {
       Alert.alert(
         "Missing Information",
         "Please fill in all required fields (Full name, Email, Phone number, Gender, Date of Birth)."
       );
       return;
     }
-
-    // Add more robust validation for email and phone number if needed
-    // Example: simple email regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Alert.alert("Invalid Email", "Please enter a valid email address.");
-      return;
-    }
-    // You might want to validate phone number format based on NigeriaPhoneInput's output
 
     setIsLoading(true); // Start loading
 
@@ -82,11 +59,10 @@ const SignUp = () => {
       console.log("Attempting to sign up with:", {
         fullName,
         selectedGender,
-        email,
+
         phoneNumber,
         homeAddress,
         workAddress,
-        dateOfBirth: dateOfBirth?.toISOString().split("T")[0], // Format date for API
       });
 
       // Replace with actual API call (e.g., fetch, axios)
@@ -104,15 +80,7 @@ const SignUp = () => {
     } finally {
       setIsLoading(false); // End loading
     }
-  }, [
-    fullName,
-    selectedGender,
-    email,
-    phoneNumber,
-    homeAddress,
-    workAddress,
-    dateOfBirth,
-  ]); // Dependencies for useCallback
+  }, [fullName, selectedGender, email, phoneNumber, homeAddress, workAddress]); // Dependencies for useCallback
 
   // Memoize the gender options to prevent unnecessary re-renders of CustomSelect
   const genderOptions = useMemo(() => GENDER_OPTIONS, []);
@@ -132,64 +100,50 @@ const SignUp = () => {
           >
             <View style={styles.inputSection}>
               {/* Group inputs logically */}
-              <Text style={styles.title}>Welcome User,</Text>
-              <Text style={styles.subtitle}>
-                Please provide the necessary documents to set up your account
+              <Pressable
+                onPress={() => router.back()}
+                style={{
+                  flexDirection: "row",
+                  marginLeft: scale(-8),
+                  gap: scale(5),
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="chevron-left"
+                  size={30}
+                  color="black"
+                />
+                <Text style={styles.progressText}>
+                  Let's go, you're almost there!
+                </Text>
+              </Pressable>
+
+              <Text style={styles.headerTitle}>
+                3. Business Details (optional)
               </Text>
-              <Text style={styles.headertitle}>
-                1. Contact Person Information
+              <Text style={styles.subtitle}>
+                Regulations require you to upload your business registration
+                number. Don't worry, your data will stay safe and private.
               </Text>
               <TextInput
-                placeholder="Full name"
+                placeholder="Business Registration Number"
                 value={fullName}
                 onChangeText={setFullName}
                 autoCapitalize="words"
                 returnKeyType="next" // Improve keyboard navigation
                 onSubmitEditing={() => Keyboard.dismiss()} // Consider focusing next input instead
               />
-              <TextInput
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                returnKeyType="next"
-                onSubmitEditing={() => Keyboard.dismiss()}
-              />
+
               <NigeriaPhoneInput
+                placeholder="Mobile Number"
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
                 returnKeyType="next"
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
-              <TextInput
-                placeholder="Position In Company"
-                value={fullName}
-                onChangeText={setFullName}
-                autoCapitalize="words"
-                returnKeyType="next" // Improve keyboard navigation
-                onSubmitEditing={() => Keyboard.dismiss()} // Consider focusing next input instead
-              />
-              <View style={styles.rowInputs}>
-                <View style={styles.rowInputHalf}>
-                  <CustomDatePicker
-                  // date={dateOfBirth} // Pass state to DatePicker
-                  // onChange={handleDateChange} // Pass the memoized handler
-                  // placeholder="Date of Birth" // Add a placeholder for clarity
-                  />
-                </View>
-                <View style={styles.rowInputHalf}>
-                  <CustomSelect
-                    options={genderOptions}
-                    placeholder="Gender"
-                    onValueChange={setSelectedGender} // Use selectedGender
-                    value={selectedGender}
-                  />
-                </View>
-              </View>
 
               <TextInput
-                placeholder="Home Address (optional)"
+                placeholder="Business Address (If diffrent from Regional address)"
                 value={homeAddress}
                 onChangeText={setHomeAddress}
                 autoCapitalize="words"
@@ -197,7 +151,7 @@ const SignUp = () => {
                 onSubmitEditing={() => Keyboard.dismiss()}
               />
               <TextInput
-                placeholder="Work Address (optional)"
+                placeholder="Referral Code (If Applicable)"
                 value={workAddress}
                 onChangeText={setWorkAddress}
                 autoCapitalize="words"
@@ -205,13 +159,43 @@ const SignUp = () => {
                 onSubmitEditing={handleSignUp} // Submit form on last input
               />
             </View>
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: verticalScale(10),
+              }}
+            >
+              <Checkbox
+                //   style={{ margin: scale(8) }}
+                value={isChecked}
+                onValueChange={setChecked}
+                color={isChecked ? colors.primary : undefined}
+              />
+              <Text style={styles.termsText}>
+                By clicking this box, i have read, understood and agreed to the
+                <Link
+                  style={{
+                    color: colors.primary,
+                    fontFamily: JostFont.medium,
+                    textDecorationLine: "underline",
+                  }}
+                  href="/#"
+                >
+                  {" "}
+                  terms and conditions
+                </Link>{" "}
+                of FalconEx
+              </Text>
+            </View>
 
             <View style={styles.buttonContainer}>
               <Button
                 label={isLoading ? "Signing Up..." : "Next"}
                 theme="primary"
                 onPress={() => {
-                  router.push("/(auth)/corporate-sign-up-three"); // Navigate to next step
+                  router.push("/(auth)/corporate-sign-up-five"); // Navigate to next step
                 }}
                 // disabled={isLoading}
               />
@@ -257,14 +241,19 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(16),
     fontFamily: JostFont.normal,
     color: colors.grey,
-    marginBottom: verticalScale(20),
+    marginBottom: verticalScale(30),
     textAlign: "left", // Ensure subtitle is aligned left within its container
   },
-  headertitle: {
+  progressText: {
+    fontSize: moderateScale(22),
+    color: "#666",
+    marginBottom: verticalScale(20),
+  },
+  headerTitle: {
     fontSize: moderateScale(22),
     fontFamily: JostFont.normal,
     color: colors.primary,
-    marginBottom: verticalScale(20),
+    marginBottom: verticalScale(10),
     textAlign: "left", // Ensure subtitle is aligned left within its container
   },
   rowInputs: {
@@ -274,6 +263,14 @@ const styles = StyleSheet.create({
   },
   rowInputHalf: {
     width: "48%", // Maintain 48% width for each input in the row
+  },
+  termsText: {
+    fontSize: moderateScale(14),
+    fontFamily: JostFont.light,
+    fontStyle: "italic",
+    color: "#686868",
+    marginLeft: scale(10), // Add some space between checkbox and text
+    // marginBottom: verticalScale(40),
   },
   buttonContainer: {
     width: "100%",

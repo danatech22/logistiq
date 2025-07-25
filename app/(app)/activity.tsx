@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 
-const index = () => {
+const Activity = () => {
   const { signOut } = useAuth();
   return (
     <View
@@ -10,10 +10,10 @@ const index = () => {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "red",
+        backgroundColor: "yellow",
       }}
     >
-      <Text>Home</Text>
+      <Text>Activity</Text>
       <Pressable onPress={() => signOut()}>
         <Text>Logout</Text>
       </Pressable>
@@ -21,4 +21,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Activity;

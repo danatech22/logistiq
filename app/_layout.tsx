@@ -17,6 +17,7 @@ import {
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import {
   OnboardingProvider,
   useOnboarding,
@@ -29,7 +30,8 @@ SplashScreen.preventAutoHideAsync();
 function RootLayoutContent() {
   const { onboardingCompleted, isLoadingOnboarding } = useOnboarding();
   const [isAppReady, setIsAppReady] = useState(false);
-  let userName = null;
+  const { userToken } = useAuth();
+  let userName = userToken;
 
   const [interLoaded, interError] = useInterFonts({
     Inter_900Black,
@@ -89,7 +91,7 @@ function RootLayoutContent() {
         <Stack.Screen name="(app)" />
       </Stack.Protected> */}
       <Stack.Protected guard={onboardingCompleted && userName != null}>
-        <Stack.Screen name="(app)/index" />
+        <Stack.Screen name="(app)" />
       </Stack.Protected>
 
       <Stack.Screen name="+not-found" />
@@ -100,7 +102,9 @@ function RootLayoutContent() {
 export default function RootLayout() {
   return (
     <OnboardingProvider>
-      <RootLayoutContent />
+      <AuthProvider>
+        <RootLayoutContent />
+      </AuthProvider>
     </OnboardingProvider>
   );
 }

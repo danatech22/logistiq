@@ -1,5 +1,6 @@
 import Button from "@/components/Button"; // Your custom button component
 import JostFont from "@/constants/jost-font";
+import { useAuth } from "@/contexts/AuthContext";
 import { moderateScale, verticalScale } from "@/utils/scaling";
 import React, { useState } from "react";
 import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
@@ -10,11 +11,13 @@ const AddressConfirmationScreen = () => {
   const [buildingName, setBuildingName] = useState("Empire State Building");
   const [addressLabel, setAddressLabel] = useState("Office");
   const [region, setRegion] = useState({
-    latitude: 40.748817,
-    longitude: -73.985428,
+    latitude: 6.465822459001276,
+    longitude: 3.425250858934327,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
+
+  const { setAuthToken } = useAuth();
 
   return (
     <View style={styles.container}>
@@ -75,7 +78,10 @@ const AddressConfirmationScreen = () => {
 
         <Button
           label="Confirm Address"
-          onPress={() => console.log("Address confirmed")}
+          onPress={() => {
+            console.log("Address confirmed");
+            setAuthToken("user-new-token");
+          }}
           theme="primary"
         />
       </View>
@@ -99,10 +105,10 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     backgroundColor: "white",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 24,
-    marginTop: -20,
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
+    padding: moderateScale(24),
+    marginTop: verticalScale(-20),
     shadowColor: "#000",
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,

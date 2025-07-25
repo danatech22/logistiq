@@ -4,6 +4,7 @@ import TextInput from "@/components/TextInput";
 import colors from "@/constants/colors";
 
 import JostFont from "@/constants/jost-font";
+import { useAuth } from "@/contexts/AuthContext";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
 import { Image } from "expo-image";
@@ -16,6 +17,7 @@ const Login = () => {
   const { resetOnboarding } = useOnboarding();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { setAuthToken } = useAuth();
 
   return (
     <>
@@ -53,7 +55,13 @@ const Login = () => {
           </Text>
         </View>
         <View style={{ width: "70%" }}>
-          <Button label="Login" theme="primary" />
+          <Button
+            onPress={() => {
+              setAuthToken("user-new-token");
+            }}
+            label="Login"
+            theme="primary"
+          />
           <Link
             href="/(auth)/sign-up"
             style={[

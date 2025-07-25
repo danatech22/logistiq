@@ -1,0 +1,31 @@
+// components/GridIcon.tsx
+import React from "react";
+import Svg, { Path } from "react-native-svg";
+
+interface GridIconProps {
+  size?: number;
+  color?: string;
+  focused?: boolean;
+}
+
+const GridIcon: React.FC<GridIconProps> = ({
+  size = 24,
+  color = "#9B9B9B",
+  focused = false,
+}) => {
+  const iconColor = focused ? "#087BCD" : color;
+
+  // Adjust height to maintain aspect ratio based on original SVG dimensions (37x36)
+  const adjustedHeight = size * (36 / 37);
+
+  return (
+    <Svg width={size} height={adjustedHeight} viewBox="0 0 37 36" fill="none">
+      <Path
+        d="M5.5 12.3929V5.25H12.6429V12.3929H5.5ZM10.8571 10.6071V7.03571H7.28571V10.6071H10.8571ZM14.4286 12.3929V5.25H21.5714V12.3929H14.4286ZM19.7857 10.6071V7.03571H16.2143V10.6071H19.7857ZM23.3571 12.3929V5.25H30.5V12.3929H23.3571ZM25.1429 10.6071H28.7143V7.03571H25.1429V10.6071ZM5.5 21.3214V14.1786H12.6429V21.3214H5.5ZM10.8571 19.5357V15.9643H7.28571V19.5357H10.8571ZM14.4286 21.3214V14.1786H21.5714V21.3214H14.4286ZM19.7857 19.5357V15.9643H16.2143V19.5357H19.7857ZM23.3571 21.3214V14.1786H30.5V21.3214H23.3571ZM28.7143 19.5357V15.9643H25.1429V19.5357H28.7143ZM5.5 30.25V23.1071H12.6429V30.25H5.5ZM7.28571 28.4643H10.8571V24.8929H7.28571V28.4643ZM14.4286 30.25V23.1071H21.5714V30.25H14.4286ZM16.2143 28.4643H19.7857V24.8929H16.2143V28.4643ZM23.3571 30.25V23.1071H30.5V30.25H23.3571ZM25.1429 28.4643H28.7143V24.8929H25.1429V28.4643Z"
+        fill={iconColor}
+      />
+    </Svg>
+  );
+};
+
+export default GridIcon;

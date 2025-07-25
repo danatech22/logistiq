@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import colors from "@/constants/colors";
 import JostFont from "@/constants/jost-font";
+import { useAuth } from "@/contexts/AuthContext";
 import { moderateScale, scale, verticalScale } from "@/utils/scaling";
 import { Image } from "expo-image";
 import * as Location from "expo-location";
@@ -15,6 +16,8 @@ const LocationAccess = () => {
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const { setAuthToken } = useAuth();
+
   async function getCurrentLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -24,6 +27,7 @@ const LocationAccess = () => {
 
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location);
+    setAuthToken("user-new-token");
   }
 
   //   let text = "Waiting...";
